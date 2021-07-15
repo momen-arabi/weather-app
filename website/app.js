@@ -1,5 +1,6 @@
 /* Global Variables */
-const apiKey = "5038a449711c8aed81df2e53445046d7"; // personal API Key
+const apiKey = "5038a449711c8aed81df2e53445046d7"; /* personal API Key and will be removed
+once I pass the project to prevent it from being used from git visitors*/
 
 // Create a new date instance dynamically with JS
 let d = new Date();
@@ -17,7 +18,7 @@ document.getElementById('generate').addEventListener('click', () => {
       content: content,
     });
   }) // calling the postTempData async function to post the date, temperature and feeling to the projectData object in the server side
-  getTempData() // calling the getTempData async function to get all projectData values
+  .then(getTempData) // calling the getTempData async function to get all projectData values
   .then((allRequiredData) => {
     updateUI(allRequiredData);
   }); // calling the updateUI async function to update the UI (date, temperature and feeling)
@@ -26,10 +27,14 @@ document.getElementById('generate').addEventListener('click', () => {
 // Fetch API for Temperature
 const getTemp = async (apiKey,zip) => {
   const temp = await fetch(`http://api.openweathermap.org/data/2.5/weather?zip=${zip}&appid=${apiKey}&units=metric`); // fetching temperature data using API key and ZIP code
-  if (!zip) {
-    alert('Please add the ZIP code!');
+  function checkZipCode(zipCode){
+      var zipPattern = /^\d{5}$|^\d{5}-\d{4}$/;
+      return zipPattern.test(zipCode);
+  } // a function to validate the entered ZIP code with Regex
+  if (!checkZipCode(zip)) {
+    alert('Please add a correct ZIP code!');
     return false;
-  } // getting alert message if ZIP code wasn't entered
+  } // getting alert message if ZIP code wasn't entered correctly
   else {
     try {
       const tempData = await temp.json();
